@@ -31,23 +31,61 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+  const { title, url, techs } = request.body;
+
+  const repositoryIndex = repositories.findIndex(r => r.id === id);
+
+  if(repositoryIndex < 0){
+    return response.status(400).json({ error: 'Repository not found '});
+  }
+
+  const repository = repositories[repositoryIndex];
+
+  repository.title = title;
+  repository.url = url;
+  repository.techs = techs;
+
+  repositories[repositoryIndex] = repository;
+
+  return response.json(repository);
+
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  const repositoryIndex = repositories.findIndex(r => r.id === id);
+
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Repository not found.' });
+  }
+
+  repositories.splice(repositoryIndex, 1);
+
+  return response.status(204).json({ msg:'Apagado com sucesso' });
 });
 
 app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
 
-  const repository = repositories.find(r => r.id === id);
+  const repositoryIndex = repositories.findIndex(r => r.id === id);
 
-  if(!repository){
-    return response.status(400).send();
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Repository not found.' });
   }
 
-  repository.likes +=1;
+  const repository = repositories[repositoryIndex];
+
+  /*if(repository.likes > 0){
+    return response.status(400).json({ msg: 'You can give only one like' })
+  }*/
+
+  repository.likes += 1;
+
+  repositories[repositoryIndex] = repository;
 
   return response.json(repository);
 });
