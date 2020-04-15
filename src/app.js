@@ -79,10 +79,6 @@ app.post("/repositories/:id/like", (request, response) => {
 
   const repository = repositories[repositoryIndex];
 
-  /*if(repository.likes > 0){
-    return response.status(400).json({ msg: 'You can give only one like' })
-  }*/
-
   repository.likes += 1;
 
   repositories[repositoryIndex] = repository;
